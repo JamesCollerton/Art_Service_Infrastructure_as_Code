@@ -7,8 +7,8 @@ provider "aws" {
   profile    = "ecsadministrator"
 }
 
-resource "aws_ecr_repository" "artserviceecrrepository" {
-  name = "artserviceecrrepository"
+resource "aws_ecr_repository" "artservicesourcingdataservice" {
+  name = "artservicesourcingdataservice"
 }
 
 terraform {
