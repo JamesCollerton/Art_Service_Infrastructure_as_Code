@@ -9,7 +9,7 @@ provider "aws" {
 
 # Define a vpc
 resource "aws_vpc" "ecsvpc" {
-  cidr_block = "200.0.0.0/16"
+  cidr_block = "10.0.0.0/16"
   tags {
     Name = "ecsvpc"
   }
@@ -26,7 +26,7 @@ resource "aws_internet_gateway" "ecsvpcinternetgateway" {
 # Public subnet
 resource "aws_subnet" "ecsvpceast1aSN0-0" {
   vpc_id = "${aws_vpc.ecsvpc.id}"
-  cidr_block = "200.0.0.0/24"
+  cidr_block = "10.0.0.0/24"
   availability_zone = "us-east-1a"
   tags {
     Name = "ecsvpceast1aSN0-0"
