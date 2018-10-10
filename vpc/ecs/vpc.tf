@@ -4,7 +4,7 @@
 
 provider "aws" {
   region     = "us-east-1"
-  profile    = "ecsadministrator"
+  profile    = "vpcadministrator"
 }
 
 # Define a vpc
@@ -82,14 +82,14 @@ resource "aws_security_group" "ecsvpcsggeneric" {
           "0.0.0.0/0"]
     }
 
-   ingress {
-      from_port = 0
-      to_port = 0
-      protocol = "tcp"
-      cidr_blocks = [
-         "${var.test_public_01_cidr}",
-         "${var.test_public_02_cidr}"]
-    }
+#   ingress {
+#      from_port = 0
+#      to_port = 0
+#      protocol = "tcp"
+#      cidr_blocks = [
+#         "${var.test_public_01_cidr}",
+#         "${var.test_public_02_cidr}"]
+#    }
     
     # Allow all traffic to private SN
     egress {
