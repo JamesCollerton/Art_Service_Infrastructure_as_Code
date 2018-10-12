@@ -19,3 +19,13 @@ data "aws_iam_policy_document" "ecsservicepolicy" {
         }
     }
 }
+
+terraform {
+  backend "s3" {
+    bucket  = "artserviceremotestatebucket"
+    key     = "vpc/ecs/terraform.tfstate"
+    region  = "us-east-1"
+    profile = "s3administrator"
+  }
+}
+
