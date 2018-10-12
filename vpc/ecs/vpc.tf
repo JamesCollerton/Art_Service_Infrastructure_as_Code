@@ -2,6 +2,8 @@
 
 # Credentials must be in ~/.aws/credentials
 
+# This uses a combination of https://docs.aws.amazon.com/AmazonECS/latest/developerguide/get-set-up-for-amazon-ecs.html and http://blog.shippable.com/setup-a-container-cluster-on-aws-with-terraform-part-2-provision-a-cluster for the setup.
+
 provider "aws" {
   region     = "us-east-1"
   profile    = "vpcadministrator"
