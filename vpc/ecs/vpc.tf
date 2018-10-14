@@ -11,9 +11,9 @@ provider "aws" {
 
 # Define a vpc
 resource "aws_vpc" "ecsvpc" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block = "${var.network_cidr}"
   tags {
-    Name = "ecsvpc"
+    Name = "${var.vpc_name}"
   }
 }
 
@@ -25,17 +25,27 @@ resource "aws_internet_gateway" "ecsvpcinternetgateway" {
   }
 }
 
-# Public subnet
+# Public subnet one (need two for load balancing)
 resource "aws_subnet" "ecsvpceast1aSN0-0" {
   vpc_id = "${aws_vpc.ecsvpc.id}"
-  cidr_block = "10.0.0.0/24"
+  cidr_block = "${var.public_01_cidr}"
   availability_zone = "us-east-1a"
   tags {
     Name = "ecsvpceast1aSN0-0"
   }
 }
 
-# Routing table for public subnet
+# Public subnet two
+resource "aws_subnet" "ecsvpceast1aSN0-1" {
+  vpc_id = "${aws_vpc.ecsvpc.id}"
+  cidr_block = "${var.public_02_cidr}"
+  availability_zone = "us-east-1b"
+  tags {
+    Name = "ecsvpceast1aSN0-1"
+  }
+}
+
+# Routing table for public subnet one
 resource "aws_route_table" "ecsvpcSN0-0RT" {
   vpc_id = "${aws_vpc.ecsvpc.id}"
   route {
@@ -47,10 +57,28 @@ resource "aws_route_table" "ecsvpcSN0-0RT" {
   }
 }
 
-# Associate the routing table to public subnet
+# Routing table for public subnet two
+resource "aws_route_table" "ecsvpcSN0-1RT" {
+  vpc_id = "${aws_vpc.ecsvpc.id}"
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = "${aws_internet_gateway.ecsvpcinternetgateway.id}"
+  }
+  tags {
+    Name = "ecsvpcSN0-1RT"
+  }
+}
+
+# Associate the routing table to public subnet one
 resource "aws_route_table_association" "ecsvpceast1aSN0-0RTAssn" {
   subnet_id = "${aws_subnet.ecsvpceast1aSN0-0.id}"
   route_table_id = "${aws_route_table.ecsvpcSN0-0RT.id}"
+}
+
+# Associate the routing table to public subnet one
+resource "aws_route_table_association" "ecsvpceast1aSN0-1RTAssn" {
+  subnet_id = "${aws_subnet.ecsvpceast1aSN0-1.id}"
+  route_table_id = "${aws_route_table.ecsvpcSN0-1RT.id}"
 }
 
 # ECS Instance Security group
@@ -84,14 +112,14 @@ resource "aws_security_group" "ecsvpcsggeneric" {
           "0.0.0.0/0"]
     }
 
-#   ingress {
-#      from_port = 0
-#      to_port = 0
-#      protocol = "tcp"
-#      cidr_blocks = [
-#         "${var.test_public_01_cidr}",
-#         "${var.test_public_02_cidr}"]
-#    }
+   ingress {
+      from_port = 0
+      to_port = 0
+      protocol = "tcp"
+      cidr_blocks = [
+         "${var.public_01_cidr}",
+         "${var.public_02_cidr}"]
+    }
     
     # Allow all traffic to private SN
     egress {

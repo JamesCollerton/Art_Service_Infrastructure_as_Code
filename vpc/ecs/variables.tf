@@ -19,23 +19,23 @@ variable "availability_zone" {
   }
 }
 
-########################### Test VPC Config ################################
+########################### VPC Config #####################################
 
-variable "test_vpc" {
-  description = "VPC name for Test environment"
+variable "vpc_name" {
+  description = "VPC name"
 }
 
-#variable "test_network_cidr" {
-#  description = "IP addressing for Test Network"
-#}
-#
-#variable "test_public_01_cidr" {
-#  description = "Public 0.0 CIDR for externally accessible subnet"
-#}
-#
-#variable "test_public_02_cidr" {
-#  description = "Public 0.0 CIDR for externally accessible subnet"
-#}
+variable "network_cidr" {
+  description = "IP addressing for network"
+}
+
+variable "public_01_cidr" {
+  description = "Public 0.0 CIDR for externally accessible subnet"
+}
+
+variable "public_02_cidr" {
+  description = "Public 0.0 CIDR for externally accessible subnet"
+}
 
 ########################### Autoscale Config ################################
 
