@@ -1,5 +1,5 @@
 ecs_cluster="ecsvpccluster"
-ecs_key_pair_name="$ECS_KEY_PAIR_NAME"
+ecs_key_pair_name="ecskeypair"
 region = "us-east-1"
 vpc_name = "ecsvpcclustertest"
 network_cidr = "10.0.0.0/16"

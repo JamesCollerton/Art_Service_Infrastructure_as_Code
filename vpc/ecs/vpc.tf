@@ -112,6 +112,7 @@ resource "aws_security_group" "ecsvpcsggeneric" {
           "0.0.0.0/0"]
     }
 
+   # Two subnets for load balancer
    ingress {
       from_port = 0
       to_port = 0
