@@ -1,7 +1,7 @@
 ecs_cluster="ecsvpccluster"
 ecs_key_pair_name="ecskeypair"
 region = "us-east-1"
-vpc_name = "ecsvpcclustertest"
+vpc_name = "ecsvpccluster"
 network_cidr = "10.0.0.0/16"
 public_01_cidr = "10.0.0.0/25"
 public_02_cidr = "10.0.0.128/25"
