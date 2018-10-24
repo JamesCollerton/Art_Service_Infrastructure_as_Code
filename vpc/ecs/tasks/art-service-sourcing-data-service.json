@@ -1,6 +1,6 @@
 [     
     {
-        "name": "sourcingdataservice",
+        "name": "sourcing-data-service",
         "image": "257777415217.dkr.ecr.us-east-1.amazonaws.com/artservicesourcingdataservice:latest",
         "cpu": 10,
         "memory": 500,

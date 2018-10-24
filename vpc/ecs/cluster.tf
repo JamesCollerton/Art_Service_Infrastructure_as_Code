@@ -1,4 +1,4 @@
-resource "aws_ecs_cluster" "artserviceecscluster" {
+resource "aws_ecs_cluster" "art-service-ecs-cluster" {
    name = "${var.ecs_cluster}"
 }
 

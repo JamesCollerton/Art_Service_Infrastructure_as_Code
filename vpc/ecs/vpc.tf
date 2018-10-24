@@ -10,7 +10,7 @@ provider "aws" {
 }
 
 # Define a vpc
-resource "aws_vpc" "ecsvpc" {
+resource "aws_vpc" "ecs-vpc" {
   cidr_block = "${var.network_cidr}"
   tags {
     Name = "${var.vpc_name}"
@@ -18,74 +18,74 @@ resource "aws_vpc" "ecsvpc" {
 }
 
 # Internet gateway for the public subnet
-resource "aws_internet_gateway" "ecsvpcinternetgateway" {
-  vpc_id = "${aws_vpc.ecsvpc.id}"
+resource "aws_internet_gateway" "ecs-vpc-internet-gateway" {
+  vpc_id = "${aws_vpc.ecs-vpc.id}"
   tags {
-    Name = "ecsvpcinternetgateway"
+    Name = "ecs-vpc-internet-gateway"
   }
 }
 
 # Public subnet one (need two for load balancing)
-resource "aws_subnet" "ecsvpceast1aSN0-0" {
-  vpc_id = "${aws_vpc.ecsvpc.id}"
+resource "aws_subnet" "ecs-vpc-east-1a-SN0-0" {
+  vpc_id = "${aws_vpc.ecs-vpc.id}"
   cidr_block = "${var.public_01_cidr}"
   availability_zone = "us-east-1a"
   tags {
-    Name = "ecsvpceast1aSN0-0"
+    Name = "ecs-vpc-east-1a-SN0-0"
   }
 }
 
 # Public subnet two
-resource "aws_subnet" "ecsvpceast1aSN0-1" {
-  vpc_id = "${aws_vpc.ecsvpc.id}"
+resource "aws_subnet" "ecs-vpc-east-1a-SN0-1" {
+  vpc_id = "${aws_vpc.ecs-vpc.id}"
   cidr_block = "${var.public_02_cidr}"
   availability_zone = "us-east-1b"
   tags {
-    Name = "ecsvpceast1aSN0-1"
+    Name = "ecs-vpc-east-1a-SN0-1"
   }
 }
 
 # Routing table for public subnet one
-resource "aws_route_table" "ecsvpcSN0-0RT" {
-  vpc_id = "${aws_vpc.ecsvpc.id}"
+resource "aws_route_table" "ecs-vpc-SN0-0RT" {
+  vpc_id = "${aws_vpc.ecs-vpc.id}"
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = "${aws_internet_gateway.ecsvpcinternetgateway.id}"
+    gateway_id = "${aws_internet_gateway.ecs-vpc-internet-gateway.id}"
   }
   tags {
-    Name = "ecsvpcSN0-0RT"
+    Name = "ecs-vpc-SN0-0RT"
   }
 }
 
 # Routing table for public subnet two
-resource "aws_route_table" "ecsvpcSN0-1RT" {
-  vpc_id = "${aws_vpc.ecsvpc.id}"
+resource "aws_route_table" "ecs-vpc-SN0-1RT" {
+  vpc_id = "${aws_vpc.ecs-vpc.id}"
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = "${aws_internet_gateway.ecsvpcinternetgateway.id}"
+    gateway_id = "${aws_internet_gateway.ecs-vpc-internet-gateway.id}"
   }
   tags {
-    Name = "ecsvpcSN0-1RT"
+    Name = "ecs-vpc-SN0-1RT"
   }
 }
 
 # Associate the routing table to public subnet one
-resource "aws_route_table_association" "ecsvpceast1aSN0-0RTAssn" {
-  subnet_id = "${aws_subnet.ecsvpceast1aSN0-0.id}"
-  route_table_id = "${aws_route_table.ecsvpcSN0-0RT.id}"
+resource "aws_route_table_association" "ecs-vpc-east-1a-SN0-0RT-Assn" {
+  subnet_id = "${aws_subnet.ecs-vpc-east-1a-SN0-0.id}"
+  route_table_id = "${aws_route_table.ecs-vpc-SN0-0RT.id}"
 }
 
 # Associate the routing table to public subnet one
-resource "aws_route_table_association" "ecsvpceast1aSN0-1RTAssn" {
-  subnet_id = "${aws_subnet.ecsvpceast1aSN0-1.id}"
-  route_table_id = "${aws_route_table.ecsvpcSN0-1RT.id}"
+resource "aws_route_table_association" "ecs-vpc-east-1a-SN0-1RT-Assn" {
+  subnet_id = "${aws_subnet.ecs-vpc-east-1a-SN0-1.id}"
+  route_table_id = "${aws_route_table.ecs-vpc-SN0-1RT.id}"
 }
 
 # ECS Instance Security group
-resource "aws_security_group" "ecsvpcsggeneric" {
-    name = "ecsvpcsggeneric"
+resource "aws_security_group" "ecs-vpc-sg-generic" {
+    name = "ecs-vpc-sg-generic"
     description = "Generic security group for accessing the ECS VPC."
-    vpc_id = "${aws_vpc.ecsvpc.id}"
+    vpc_id = "${aws_vpc.ecs-vpc.id}"
 
    ingress {
        from_port = 22

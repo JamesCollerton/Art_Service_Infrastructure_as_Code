@@ -1,14 +1,14 @@
-resource "aws_ecs_service" "artservicesourcingdataecsservice" {
-  	name            = "artservicesourcingdataecsservice"
-  	iam_role        = "${aws_iam_role.ecsservicerole.name}"
-  	cluster         = "${aws_ecs_cluster.artserviceecscluster.id}"
-  	task_definition = "${aws_ecs_task_definition.artservicesourcingdataservice.family}:${max("${aws_ecs_task_definition.artservicesourcingdataservice.revision}", "${data.aws_ecs_task_definition.artservicesourcingdataservice.revision}")}"
+resource "aws_ecs_service" "art-service-sourcing-data-ecs-service" {
+  	name            = "art-service-sourcing-data-ecs-service"
+  	iam_role        = "${aws_iam_role.ecs-service-role.name}"
+  	cluster         = "${aws_ecs_cluster.art-service-ecs-cluster.id}"
+  	task_definition = "${aws_ecs_task_definition.art-service-sourcing-data-service.family}:${max("${aws_ecs_task_definition.art-service-sourcing-data-service.revision}", "${data.aws_ecs_task_definition.art-service-sourcing-data-service.revision}")}"
   	desired_count   = 1
 
   	load_balancer {
-    	target_group_arn  = "${aws_alb_target_group.ecstargetgroup.arn}"
+    	target_group_arn  = "${aws_alb_target_group.ecs-target-group.arn}"
     	container_port    = 8082
-    	container_name    = "sourcingdataservice"
+    	container_name    = "sourcing-data-service"
 	}
 }
 

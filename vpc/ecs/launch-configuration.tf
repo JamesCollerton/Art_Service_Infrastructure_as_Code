@@ -1,8 +1,8 @@
-resource "aws_launch_configuration" "ecslaunchconfiguration" {
-    name                        = "ecslaunchconfiguration"
+resource "aws_launch_configuration" "ecs-launch-configuration" {
+    name                        = "ecs-launch-configuration"
     image_id                    = "ami-0b9a214f40c38d5eb"
-    instance_type               = "t2.micro"
-    iam_instance_profile        = "${aws_iam_instance_profile.ecsinstanceprofile.id}"
+    instance_type               = "t2.small"
+    iam_instance_profile        = "${aws_iam_instance_profile.ecs-instance-profile.id}"
 
     # This is taken from the standard setup from the wizard
     root_block_device {
@@ -16,7 +16,7 @@ resource "aws_launch_configuration" "ecslaunchconfiguration" {
     }
 
     # Note, you need to create your own key pair on AWS first to use this
-    security_groups             = ["${aws_security_group.ecsvpcsggeneric.id}"]
+    security_groups             = ["${aws_security_group.ecs-vpc-sg-generic.id}"]
     associate_public_ip_address = "true"
     key_name                    = "${var.ecs_key_pair_name}"
     user_data                   = <<EOF
