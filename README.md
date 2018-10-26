@@ -24,6 +24,8 @@ This should also match the folder structure in the repository.
 
 ## ECS
 
+### How Does ECS Work?
+
 ### VPC
 
 #### Internet Gateways
