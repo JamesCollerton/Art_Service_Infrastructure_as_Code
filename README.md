@@ -11,18 +11,44 @@ Currently all infrastructure is set up using Terraform on AWS. Each different ty
 This is set up as an S3 bucket on AWS. For initial setup you will need to initialise the S3 bucket and then migrate the existing state over. The file path for the state should then match:
 
 ```
-servicetype/serviceimplementation/furtherdetails/terraform.tstate
+service-type/service-implementation/further-details/terraform.tstate
 ```
 
-For example, for the `artservicesourcingdataservice` the file path should be:
+For example, for the `art-service-sourcing-data-service` the file path should be:
 
 ```
-ecs/ecrrepositories/artservicesourcingdataservice/terraform.tstate
+ecs/ecr-repositories/art-service-sourcing-data-service/terraform.tstate
 ```
 
 This should also match the folder structure in the repository.
 
 ## ECS
+
+### VPC
+
+#### Internet Gateways
+
+#### Public Subnets
+
+#### Routing Tables (and subnet association tables)
+
+#### Security Groups
+
+### ECS Cluster
+
+#### Task Definitions
+
+#### Services
+
+#### Launch Configurations
+
+#### ECS Service Role and ECS Instance Role
+
+#### Cluster
+
+#### Autoscaling Group
+
+#### Application Load Balancer 
 
 ### ECR
 
