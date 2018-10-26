@@ -26,6 +26,73 @@ This should also match the folder structure in the repository.
 
 ### How Does ECS Work?
 
+ECS is the AWS Docker container service which handles the orchestration and provisioning of Docker containers. It works as below:
+
+![ECS Image](README/ECS_Image.png)
+
+There exists a cluster of EC2 container instances. Running amongst the EC2 instances is a service. That service can hold multiple instances of a task. The service is responsible for scaling the task definitions up and down as well as bringing them back up if they fall over.
+
+### ECS Cluster
+
+#### Tasks and Task Definitions
+
+A task definition is the blueprint of how a docker container should launch. The task is then the running instance of the task definition. They use `.json` files similar to the below in order to define what a docker instance launch looks like.
+
+```
+[     
+    {
+        "name": "sourcing-data-service",
+        "image": "257777415217.dkr.ecr.us-east-1.amazonaws.com/artservicesourcingdataservice:latest",
+        "cpu": 10,
+        "memory": 500,
+        "portMappings": [
+            {
+                "containerPort": 8082,
+                "hostPort": 8082
+            }
+        ],
+      "command": [],
+        "essential": true
+    }
+]
+```
+
+Here we have an image artservicesourcingdataservice being launched from the attached ECR. It is exposed on port 8082 (where our application is listening).
+
+#### Services
+
+These define long running tasks of the same task definition. 
+
+```
+resource "aws_ecs_service" "art-service-sourcing-data-ecs-service" {
+  	name            = "art-service-sourcing-data-ecs-service"
+  	iam_role        = "${aws_iam_role.ecs-service-role.name}"
+  	cluster         = "${aws_ecs_cluster.art-service-ecs-cluster.id}"
+  	task_definition = "${aws_ecs_task_definition.art-service-sourcing-data-service.family}:${max("${aws_ecs_task_definition.art-service-sourcing-data-service.revision}", "${data.aws_ecs_task_definition.art-service-sourcing-data-service.revision}")}"
+  	desired_count   = 1
+
+  	load_balancer {
+    	target_group_arn  = "${aws_alb_target_group.ecs-target-group.arn}"
+    	container_port    = 8082
+    	container_name    = "sourcing-data-service"
+	}
+}
+```
+
+The above defines a service which holds the task defined previously. We see it is exposed on port 8082 and aims to have one instance running. The load balancer then distributes traffic across all instances of the task. The ECS scheduler automatically creates new task instances should any instance terminate unexpectedly.
+
+#### Launch Configurations
+
+#### ECS Service Role and ECS Instance Role
+
+#### Cluster
+
+The cluster is then the logic group of EC2 instances running the ecs-agent software. Each of the EC2 instances is referred to as a container instance.
+
+#### Autoscaling Group
+
+#### Application Load Balancer 
+
 ### VPC
 
 #### Internet Gateways
@@ -36,21 +103,6 @@ This should also match the folder structure in the repository.
 
 #### Security Groups
 
-### ECS Cluster
-
-#### Task Definitions
-
-#### Services
-
-#### Launch Configurations
-
-#### ECS Service Role and ECS Instance Role
-
-#### Cluster
-
-#### Autoscaling Group
-
-#### Application Load Balancer 
 
 ### ECR
 
