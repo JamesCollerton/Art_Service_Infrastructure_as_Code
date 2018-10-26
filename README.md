@@ -32,6 +32,10 @@ ECS is the AWS Docker container service which handles the orchestration and prov
 
 There exists a cluster of EC2 container instances. Running amongst the EC2 instances is a service. That service can hold multiple instances of a task. The service is responsible for scaling the task definitions up and down as well as bringing them back up if they fall over.
 
+### How Does Our Particular Instance of ECS Work?
+
+The autoscaling group and launch configuration launch an instance of EC2 attached to the autoscaling group. The line where it echoes the ECS cluster name into the ECS config is when it registers that particular instance to a part of the ECS cluster.
+
 ### ECS Cluster
 
 #### Tasks and Task Definitions
@@ -83,6 +87,37 @@ The above defines a service which holds the task defined previously. We see it i
 
 #### Launch Configurations
 
+This is used to define the type of instance we would like to launch. 
+
+```
+resource "aws_launch_configuration" "ecs-launch-configuration" {
+    name                        = "ecs-launch-configuration"
+    image_id                    = "ami-0b9a214f40c38d5eb"
+    instance_type               = "t2.small"
+    iam_instance_profile        = "${aws_iam_instance_profile.ecs-instance-profile.id}"
+
+    # This is taken from the standard setup from the wizard
+    root_block_device {
+      volume_type = "standard"
+      volume_size = 8
+      delete_on_termination = true
+    }
+
+    lifecycle {
+      create_before_destroy = true
+    }
+
+    # Note, you need to create your own key pair on AWS first to use this
+    security_groups             = ["${aws_security_group.ecs-vpc-sg-generic.id}"]
+    associate_public_ip_address = "true"
+    key_name                    = "${var.ecs_key_pair_name}"
+    user_data                   = <<EOF
+                                  #!/bin/bash
+                                  echo ECS_CLUSTER=${var.vpc_name} >> /etc/ecs/ecs.config
+                                  EOF
+}
+```
+
 #### ECS Service Role
 
 The Amazon ECS service scheduler makes calls to the Amazon EC2 and Elastic Load Balancing APIs on your behalf to register and deregister container instances with your load balancers. Before you can attach a load balancer to an Amazon ECS service, you must create an IAM role for your services to use before you start them. This requirement applies to any Amazon ECS service that you plan to use with a load balancer.
@@ -97,6 +132,8 @@ The cluster is then the logic group of EC2 instances running the ecs-agent softw
 
 #### Autoscaling Group
 
+This is the autoscaling group for the EC2 instances. It is associated to the launch configuration. Here we define the maximum and minimum number of instances we expect to run and the launch configuration we want to use for auto-scaling.
+
 ```
 resource "aws_autoscaling_group" "ecs-autoscaling-group" {
     name                        = "ecs-autoscaling-group"
@@ -109,7 +146,65 @@ resource "aws_autoscaling_group" "ecs-autoscaling-group" {
 }
 ```
 
+When we create the cluster the launch configuration is used to launch the EC2 instance. The instance is then added to the autoscaling group which can be used to add more instances as necessary.
+
 #### Application Load Balancer 
+
+Our application has a load balancer and a load balancer listener. The load balancer listens from the subnets and then forwards on to the target group.
+
+```
+resource "aws_alb" "ecs-load-balancer" {
+    name                = "ecs-load-balancer"
+    security_groups     = ["${aws_security_group.ecs-vpc-sg-generic.id}"]
+    subnets             = ["${aws_subnet.ecs-vpc-east-1a-SN0-0.id}", "${aws_subnet.ecs-vpc-east-1a-SN0-1.id}"]
+
+    tags {
+      Name = "ecs-load-balancer"
+    }
+}
+
+resource "aws_alb_listener" "ecs-alb-listener" {
+    load_balancer_arn = "${aws_alb.ecs-load-balancer.arn}"
+    port              = "80"
+    protocol          = "HTTP"
+
+    default_action {
+        target_group_arn = "${aws_alb_target_group.ecs-target-group.arn}"
+        type             = "forward"
+    }
+}
+
+```
+
+#### Target Groups
+
+Each target group is used to route requests to one or more registered targets. When you create each listener rule, you specify a target group and conditions. When a rule condition is met, traffic is forwarded to the corresponding target group.
+
+```
+resource "aws_alb_target_group" "ecs-target-group" {
+    name                = "ecs-target-group"
+    port                = "80"
+    protocol            = "HTTP"
+    vpc_id              = "${aws_vpc.ecs-vpc.id}"
+
+    health_check {
+        healthy_threshold   = "5"
+        unhealthy_threshold = "2"
+        interval            = "30"
+        matcher             = "200"
+        path                = "/"
+        port                = "traffic-port"
+        protocol            = "HTTP"
+        timeout             = "5"
+    }
+
+    tags {
+      Name = "ecs-target-group"
+    }
+}
+```
+
+The cluster has a target group which is associated with the load balancer and the cluster.
 
 ### VPC
 
