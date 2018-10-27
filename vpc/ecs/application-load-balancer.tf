@@ -43,7 +43,7 @@ resource "aws_alb_listener" "ecs-alb-listener" {
 
 terraform {
   backend "s3" {
-    bucket  = "artserviceremotestatebucket"
+    bucket  = "art-service-remote-state-bucket"
     key     = "vpc/ecs/terraform.tfstate"
     region  = "us-east-1"
     profile = "s3administrator"

@@ -130,7 +130,7 @@ resource "aws_security_group" "ecs-vpc-sg-generic" {
 
 terraform {
   backend "s3" {
-    bucket  = "artserviceremotestatebucket"
+    bucket  = "art-service-remote-state-bucket"
     key     = "vpc/ecs/terraform.tfstate"
     region  = "us-east-1"
     profile = "s3administrator"

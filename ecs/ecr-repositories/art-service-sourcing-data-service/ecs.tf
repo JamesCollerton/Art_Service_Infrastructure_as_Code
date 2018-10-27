@@ -13,7 +13,7 @@ resource "aws_ecr_repository" "art-service-sourcing-data-service" {
 
 terraform {
   backend "s3" {
-    bucket  = "artserviceremotestatebucket"
+    bucket  = "art-service-remote-state-bucket"
     key     = "ecs/ecr-repositories/art-service-sourcing-data-service/terraform.tfstate"
     region  = "us-east-1"
     profile = "s3administrator"

@@ -7,3 +7,12 @@ resource "aws_autoscaling_group" "ecs-autoscaling-group" {
     launch_configuration        = "${aws_launch_configuration.ecs-launch-configuration.name}"
     health_check_type           = "ELB"
 }
+
+terraform {
+  backend "s3" {
+    bucket  = "art-service-remote-state-bucket"
+    key     = "vpc/ecs/terraform.tfstate"
+    region  = "us-east-1"
+    profile = "s3administrator"
+  }
+}

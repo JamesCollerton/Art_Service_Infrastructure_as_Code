@@ -27,7 +27,7 @@ resource "aws_launch_configuration" "ecs-launch-configuration" {
 
 terraform {
   backend "s3" {
-    bucket  = "artserviceremotestatebucket"
+    bucket  = "art-service-remote-state-bucket"
     key     = "vpc/ecs/terraform.tfstate"
     region  = "us-east-1"
     profile = "s3administrator"

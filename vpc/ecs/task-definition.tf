@@ -18,7 +18,7 @@ resource "aws_ecs_task_definition" "art-service-sourcing-data-service" {
 
 terraform {
   backend "s3" {
-    bucket  = "artserviceremotestatebucket"
+    bucket  = "art-service-remote-state-bucket"
     key     = "vpc/ecs/terraform.tfstate"
     region  = "us-east-1"
     profile = "s3administrator"

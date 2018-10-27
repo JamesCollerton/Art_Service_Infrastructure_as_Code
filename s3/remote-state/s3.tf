@@ -11,19 +11,20 @@ provider "aws" {
   profile    = "s3administrator"
 }
 
-resource "aws_s3_bucket" "b" {
-  bucket = "artserviceremotestatebucket"
+resource "aws_s3_bucket" "art-service-remote-state-bucket" {
+  bucket = "art-service-remote-state-bucket"
   acl    = "private"
+  force_destroy = "true"
 
   tags {
-    Name        = "artserviceremotestatebucket"
+    Name        = "art-service-remote-state-bucket"
   }
 }
 
 terraform {
   backend "s3" {
-    bucket  = "artserviceremotestatebucket"
-    key     = "s3/remotestate/terraform.tfstate"
+    bucket  = "art-service-remote-state-bucket"
+    key     = "s3/remote-state/terraform.tfstate"
     region  = "us-east-1"
     profile = "s3administrator"	
   }
