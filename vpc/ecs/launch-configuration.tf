@@ -21,7 +21,7 @@ resource "aws_launch_configuration" "ecs-launch-configuration" {
     key_name                    = "${var.ecs_key_pair_name}"
     user_data                   = <<EOF
                                   #!/bin/bash
-                                  echo ECS_CLUSTER=${var.vpc_name} >> /etc/ecs/ecs.config
+                                  echo ECS_CLUSTER=${var.ecs_cluster} >> /etc/ecs/ecs.config
                                   EOF
 }
 

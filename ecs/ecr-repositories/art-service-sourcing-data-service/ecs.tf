@@ -7,14 +7,14 @@ provider "aws" {
   profile    = "ecsadministrator"
 }
 
-resource "aws_ecr_repository" "artservicesourcingdataservice" {
-  name = "artservicesourcingdataservice"
+resource "aws_ecr_repository" "art-service-sourcing-data-service" {
+  name = "art-service-sourcing-data-service"
 }
 
 terraform {
   backend "s3" {
     bucket  = "artserviceremotestatebucket"
-    key     = "ecs/ecrrepositories/artservicesourcingdataservice/terraform.tfstate"
+    key     = "ecs/ecr-repositories/art-service-sourcing-data-service/terraform.tfstate"
     region  = "us-east-1"
     profile = "s3administrator"
   }
