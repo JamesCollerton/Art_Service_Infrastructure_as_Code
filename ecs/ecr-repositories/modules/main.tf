@@ -13,10 +13,3 @@ resource "aws_ecr_repository" "ecr-repository" {
   name = "${var.service_name}"
 }
 
-terraform {
-  backend "s3" {
-    bucket  = "art-service-remote-state-bucket"
-    region  = "us-east-1"
-    profile = "s3administrator"
-  }
-}
