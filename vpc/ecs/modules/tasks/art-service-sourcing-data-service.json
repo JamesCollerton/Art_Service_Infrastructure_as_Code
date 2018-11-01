@@ -1,0 +1,16 @@
+[     
+    {
+        "name": "sourcing-data-service",
+        "image": "257777415217.dkr.ecr.us-east-1.amazonaws.com/art-service-sourcing-data-service:latest",
+        "cpu": 10,
+        "memory": 500,
+        "portMappings": [
+            {
+                "containerPort": 8082,
+                "hostPort": 8082
+            }
+        ],
+      "command": [],
+        "essential": true
+    }
+]
