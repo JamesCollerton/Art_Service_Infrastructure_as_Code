@@ -1,14 +1,6 @@
-# Must set AWS_SDK_LOAD_CONFIG=1
-
-# Credentials must be in ~/.aws/credentials
-
-provider "aws" {
-  region     = "us-east-1"
-  profile    = "ecsadministrator"
-}
-
-resource "aws_ecr_repository" "art-service-sourcing-data-service" {
-  name = "art-service-sourcing-data-service"
+module "art-service-ecr" {
+	source = "../modules"
+	service_name = "art-service-sourcing-data-service"
 }
 
 terraform {
