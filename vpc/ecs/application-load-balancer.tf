@@ -10,7 +10,7 @@ resource "aws_alb" "ecs-load-balancer" {
 
 resource "aws_alb_target_group" "ecs-target-group" {
     name                = "ecs-target-group"
-    port                = "80"
+    port                = "8082"
     protocol            = "HTTP"
     vpc_id              = "${aws_vpc.ecs-vpc.id}"
 
